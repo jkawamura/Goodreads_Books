@@ -18,7 +18,7 @@ router.get('/:id', async (req, res) => {
 router.get('/', async (req, res) => {
   const client = await pool.connect();
   try {
-    const { rows } = await client.query('SELECT * FROM genre');
+    const { rows } = await client.query('SELECT genre FROM genre');
     res.send(rows);
   } catch (err) {
     console.log(err);
