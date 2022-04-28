@@ -9,7 +9,7 @@ interface bookComponentProps {
 	book_id: number;
 	database: string;
 	setState: React.Dispatch<React.SetStateAction<boolean>>;
-}// <a href={`http://165.106.10.170:32401/psql/books/${params.row.book_id}`}>
+}
 
 const BookComponent = ({book_id, database, setState}: bookComponentProps) => {
 	const {data, isPending, error} = useFetch(`http://165.106.10.170:32401/${database}/books/${book_id}`);

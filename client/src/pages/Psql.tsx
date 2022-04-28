@@ -4,7 +4,7 @@
 import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
-import {Drawer, Grid, Rating, LinearProgress} from '@mui/material';
+import {Drawer, Grid, Rating, AppBar, Toolbar, Button} from '@mui/material';
 import useFetch from '../hooks/useFetch';
 import BookComponent from '../components/BookComponent';
 import QueryComponent from '../components/QueryComponent';
@@ -21,22 +21,28 @@ const cleanAuthor = (authorarr: string[]):string => {
 };
 
 const Psql = () => {
+	const [fetchURL, setFetchURL] = useState('http://165.106.10.170:32401/psql/books/top100');
 	const [drawer, setDrawer] = useState(false);
-	const [bookId, setBookId] = useState(1);
-	const [fieldSelect, setFieldSelect] = useState('');
+	const [bookId, setBookId] = useState(0);
+	const [fieldSelect, setFieldSelect] = useState('Title');
 	const [search, setSearch] = useState('');
+	const [genreSelect, setGenresSelect] = useState([0]);
+	const [languageSelect, setLanguageSelect] = useState([' ']);
+	const newQueryURL = `http://165.106.10.170:32401/psql/books?field=${fieldSelect}&contains=${search}&genres=${genreSelect.join()}&languages=${languageSelect.join()}`;
 
 	useEffect(() => {
-		console.log(search);
-		console.log(fieldSelect);
-	}, [search, fieldSelect]);
+		console.log(newQueryURL);
+	}, [search]);
 	const handleTitleClick = (book_id: number) => {
 		setBookId(book_id);
 		setDrawer(true);
 	};
 
-	// Const newQueryURL = `http://165.106.10.170:32401/psql/books?${fieldSelect}=${search}&`;
-	const initialBooks = useFetch('http://165.106.10.170:32401/psql/books');
+	const handleSearchClick = () => {
+		setFetchURL(newQueryURL);
+	};
+
+	const {data, error, isPending} = useFetch(fetchURL);
 
 	const columns: GridColDef[] = [
 		{field: 'book_id', headerName: 'ID', width: 70},
@@ -54,37 +60,39 @@ const Psql = () => {
 	];
 
 	return (
-		<Grid container spacing={3}>
-			<Grid item xs={12}>
-
-				<QueryComponent setSearch={setSearch} setFieldSelect={setFieldSelect} fieldSelect={fieldSelect}></QueryComponent>
-			</Grid >
-			<Grid item xs={12} sx={{margin: 2, display: 'flex', height: '80vh'}}>
-				<DataGrid
-					rowHeight={100}
-					getRowId={row => row.book_id}
-					rows={initialBooks.data && !initialBooks.isPending && !initialBooks.error ? initialBooks.data : []}
-					columns={columns}
-					pageSize={10}
-					rowsPerPageOptions={[5]}
-					components={{
-						NoRowsOverlay: () => (
-							<LinearProgress />
-						),
-					}}
-					columnVisibilityModel={{
-						book_id: false,
-					}}
-					disableSelectionOnClick
-				/>
-				<Drawer
-					anchor="right"
-					open={drawer}
-				>
-					<BookComponent database={'psql'} book_id={bookId} setState={setDrawer}/>
-				</Drawer>
+		<div>
+			<AppBar position="sticky" sx={{bgcolor: '#336791'}}>
+				<Toolbar sx={{display: 'flex', justifyContent: 'space-between'}}>
+					<img src="/psql.png" alt="" style={{height: '50px'}} />
+					<Button href="#/mongodb" variant="outlined" color="inherit">Switch to MongoDB</Button>
+				</Toolbar>
+			</AppBar>
+			<Grid container spacing={3}>
+				<Grid item xs={12} sx={{margin: 2}}>
+					<QueryComponent handleSearchClick={handleSearchClick} setGenresSelect={setGenresSelect} database={'psql'} setSearch={setSearch} setLanguageSelect={setLanguageSelect} setFieldSelect={setFieldSelect} fieldSelect={fieldSelect}></QueryComponent>
+				</Grid >
+				<Grid item xs={12} sx={{margin: 2, display: 'flex', height: '80vh'}}>
+					<DataGrid
+						rowHeight={100}
+						getRowId={row => row.book_id}
+						rows={data && !isPending && !error ? data : []}
+						columns={columns}
+						pageSize={10}
+						rowsPerPageOptions={[5]}
+						columnVisibilityModel={{
+							book_id: false,
+						}}
+						disableSelectionOnClick
+					/>
+					<Drawer
+						anchor="right"
+						open={drawer}
+					>
+						<BookComponent database={'psql'} book_id={bookId} setState={setDrawer}/>
+					</Drawer>
+				</Grid>
 			</Grid>
-		</Grid>
+		</div>
 	);
 };
 
