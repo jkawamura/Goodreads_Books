@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import {Autocomplete, Button, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from '@mui/material';
+import {Autocomplete, Button, createFilterOptions, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from '@mui/material';
 import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import useFetch from '../hooks/useFetch';
@@ -9,13 +9,13 @@ interface QueryComponentProps {
     fieldSelect: string;
 	handleSearchClick: () => void;
     setFieldSelect: React.Dispatch<React.SetStateAction<string>>;
-	setGenresSelect: React.Dispatch<React.SetStateAction<number[]>>;
+	setGenresSelect: React.Dispatch<React.SetStateAction<string[]>>;
 	setLanguageSelect: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const QueryComponentPsql = ({handleSearchClick, setSearch, setFieldSelect, setLanguageSelect, setGenresSelect, fieldSelect}: QueryComponentProps) => {
-	const {data: genreData, error: genreError, isPending: genrePending} = useFetch('http://165.106.10.170:32401/psql/genres');
-	const {data: languageData, error: languageError, isPending: languagePending} = useFetch('http://165.106.10.170:32401/psql/books/languages');
+const QueryComponentMongo = ({handleSearchClick, setSearch, setFieldSelect, setLanguageSelect, setGenresSelect, fieldSelect}: QueryComponentProps) => {
+	const {data: genreData, error: genreError, isPending: genrePending} = useFetch('http://165.106.10.170:32401/mongodb/genres');
+	const {data: languageData, error: languageError, isPending: languagePending} = useFetch('http://165.106.10.170:32401/mongodb/books/languages');
 	const handleSearch = (e: any) => {
 		setSearch(e.target.value);
 	};
@@ -25,11 +25,11 @@ const QueryComponentPsql = ({handleSearchClick, setSearch, setFieldSelect, setLa
 	};
 
 	const handleGenreSelect = (event: object, value: any) => {
-		setGenresSelect(value.map((genres: { genre_id: number; genre: string; }) => genres.genre_id));
+		setGenresSelect(value);
 	};
 
 	const handleLanguageSelect = (event: object, value: any) => {
-		setLanguageSelect(value.map((languages: {language: string; }) => languages.language));
+		setLanguageSelect(value);
 	};
 
 	return (
@@ -56,9 +56,9 @@ const QueryComponentPsql = ({handleSearchClick, setSearch, setFieldSelect, setLa
 					multiple
 					limitTags={3}
 					id="multiple-limit-tags"
-					options={genreData ? genreData : [{genre: ''}]}
-					getOptionLabel={option => option.genre}
+					options={genreData ? genreData : ['']}
 					onChange={handleGenreSelect}
+					filterOptions={createFilterOptions({matchFrom: 'start'})}
 					renderInput={params => (
 						<TextField {...params} label="Filter by Genre" placeholder="Genres" />
 					)}
@@ -70,9 +70,9 @@ const QueryComponentPsql = ({handleSearchClick, setSearch, setFieldSelect, setLa
 					multiple
 					limitTags={3}
 					id="multiple-limit-tags"
-					options={languageData ? languageData : [{language: ''}]}
-					getOptionLabel={option => option.language}
+					options={languageData ? languageData : ['']}
 					onChange={handleLanguageSelect}
+					filterOptions={createFilterOptions({matchFrom: 'start'})}
 					renderInput={params => (
 						<TextField {...params} label="Filter by Language" placeholder="Languages" />
 					)}
@@ -88,4 +88,4 @@ const QueryComponentPsql = ({handleSearchClick, setSearch, setFieldSelect, setLa
 	);
 };
 
-export default QueryComponentPsql;
+export default QueryComponentMongo;
