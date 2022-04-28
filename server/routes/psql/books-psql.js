@@ -54,6 +54,17 @@ router.get('/', async (req, res) => {
   }
 
   let valueCount = 1;
+
+  const rating = req.query.rating.split(',');
+  const reviewCount = req.query.review.split(',');
+  reviewCount[0] *= 1000;
+  reviewCount[1] *= 1000;
+  const year = req.query.year.split(',');
+  year[0] = new Date(year[0], 1, 1);
+  year[1] = new Date(year[1], 12, 30);
+
+  queryFirst += ` AND book.rating BETWEEN $${valueCount += 1} AND $${valueCount += 1} AND book.number_ratings BETWEEN $${valueCount += 1} AND $${valueCount += 1} AND book.publish_date BETWEEN $${valueCount += 1} AND $${valueCount += 1}`;
+
   const genreArr = [];
   const languageArr = [];
 
@@ -86,8 +97,7 @@ router.get('/', async (req, res) => {
   }
 
   const query = queryFirst + queryGroupBy;
-
-  runQuery(req, res, query, [`%${req.query.contains.replace(' ', '').toLowerCase()}%`, ...genreArr, ...languageArr]);
+  runQuery(req, res, query, [`%${req.query.contains.replace(' ', '').toLowerCase()}%`, ...rating, ...reviewCount, ...year, ...genreArr, ...languageArr]);
 });
 
 module.exports = router;

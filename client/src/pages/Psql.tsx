@@ -12,7 +12,7 @@ import QueryComponentPsql from '../components/QueryComponentPsql';
 const cleanAuthor = (authorarr: string[]):string => {
 	for (const author of authorarr) {
 		const split = author.split(',');
-		if (split[3].toLowerCase().trim().includes('author')) {
+		if (split[3].toLowerCase().trim().includes('author') || split[3].toLowerCase().trim().includes('contributor')) {
 			return split[1] + ' ' + split[2];
 		}
 	}
@@ -27,8 +27,11 @@ const Psql = () => {
 	const [fieldSelect, setFieldSelect] = useState('Title');
 	const [search, setSearch] = useState('');
 	const [genreSelect, setGenresSelect] = useState([0]);
-	const [languageSelect, setLanguageSelect] = useState([' ']);
-	const newQueryURL = `http://165.106.10.170:32401/psql/books?field=${fieldSelect}&contains=${search}&genres=${genreSelect.join()}&languages=${languageSelect.join()}`;
+	const [languageSelect, setLanguageSelect] = useState(['']);
+	const [ratingSelect, setRatingSelect] = useState([0, 5]);
+	const [reviewSelect, setReviewSelect] = useState([0, 8000]);
+	const [yearSelect, setYearSelect] = useState([1000, 2022]);
+	const newQueryURL = `http://165.106.10.170:32401/psql/books?field=${fieldSelect}&contains=${search}&genres=${genreSelect.join()}&languages=${languageSelect.join()}&rating=${ratingSelect.join()}&review=${reviewSelect.join()}&year=${yearSelect.join()}`;
 
 	const handleTitleClick = (book_id: number) => {
 		setBookId(book_id);
@@ -42,13 +45,29 @@ const Psql = () => {
 	useEffect(() => {
 		console.log(newQueryURL);
 	}, [genreSelect]);
+
+	const queryProps = {
+		handleSearchClick,
+		setGenresSelect,
+		setSearch,
+		setLanguageSelect,
+		setFieldSelect,
+		fieldSelect,
+		ratingSelect,
+		reviewSelect,
+		yearSelect,
+		setRatingSelect,
+		setReviewSelect,
+		setYearSelect,
+	};
+
 	const {data, error, isPending} = useFetch(fetchURL);
 
 	const columns: GridColDef[] = [
 		{field: 'book_id', headerName: 'ID', width: 70},
 		{field: 'cover_image', headerName: 'Cover', width: 100, renderCell: params => <img style={{height: '90%'}} src={params.value} />},
-		{field: 'title', headerName: 'Title', width: 350, renderCell: params => <a href="#/psql" onClick={() => handleTitleClick(params.row.book_id)}>{params.row.title}</a>},
-		{field: 'author', headerName: 'Author', width: 250, renderCell: params => cleanAuthor(params.value)},
+		{field: 'title', headerName: 'Title', width: 300, renderCell: params => <a href="#/psql" onClick={() => handleTitleClick(params.row.book_id)}>{params.row.title}</a>},
+		{field: 'author', headerName: 'Author', width: 200, renderCell: params => cleanAuthor(params.value)},
 		{field: 'publish_date', headerName: 'Published', type: 'datetime', width: 150, valueGetter: params => new Date(params.value), valueFormatter: params => params.value.getFullYear()},
 		{field: 'language', headerName: 'Language', width: 150},
 		{field: 'series', headerName: 'Series', width: 200},
@@ -68,7 +87,7 @@ const Psql = () => {
 			</AppBar>
 			<Grid container spacing={3}>
 				<Grid item xs={12} sx={{margin: 2}}>
-					<QueryComponentPsql handleSearchClick={handleSearchClick} setGenresSelect={setGenresSelect} setSearch={setSearch} setLanguageSelect={setLanguageSelect} setFieldSelect={setFieldSelect} fieldSelect={fieldSelect} />
+					<QueryComponentPsql {...queryProps} />
 				</Grid >
 				<Grid item xs={12} sx={{margin: 2, display: 'flex', height: '80vh'}}>
 					<DataGrid
@@ -87,7 +106,7 @@ const Psql = () => {
 						anchor="right"
 						open={drawer}
 					>
-						<BookComponentPsql handleSearchClick={handleSearchClick} book_id={bookId} setDrawer={setDrawer} setGenresSelect={setGenresSelect} setSearch={setSearch} />
+						<BookComponentPsql book_id={bookId} setDrawer={setDrawer} />
 					</Drawer>
 				</Grid>
 			</Grid>
