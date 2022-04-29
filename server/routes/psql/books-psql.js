@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
 
   switch (req.query.field) {
     case 'Title':
-      queryFirst += 'WHERE LOWER(book.title) LIKE $1';
+      queryFirst += "WHERE LOWER(REPLACE(book.title, ' ', '')) LIKE $1";
       break;
     case 'Author':
       queryFirst += "WHERE (LOWER(REPLACE(CONCAT(author.first_name, author.last_name), ' ', '')) LIKE $1 AND LOWER(author.role) LIKE '%author%')";

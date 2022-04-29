@@ -23,7 +23,11 @@ const QueryComponentMongo = ({...props}: QueryComponentProps) => {
 	const {data: genreData, error: genreError, isPending: genrePending} = useFetch('http://165.106.10.170:32401/mongodb/genres');
 	const {data: languageData, error: languageError, isPending: languagePending} = useFetch('http://165.106.10.170:32401/mongodb/books/languages');
 	const handleSearch = (e: any) => {
-		props.setSearch(e.target.value);
+		if (e.key === 'Enter') {
+			props.handleSearchClick();
+		} else {
+			props.setSearch(e.target.value);
+		}
 	};
 
 	const handleFieldSelect = (event: SelectChangeEvent) => {
@@ -61,7 +65,7 @@ const QueryComponentMongo = ({...props}: QueryComponentProps) => {
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={3} display="flex">
-				<TextField id="outlined-basic" label={`${props.fieldSelect} Contains`} variant="outlined" onChange={handleSearch} />
+				<TextField id="outlined-basic" label={`${props.fieldSelect} Contains`} variant="outlined" onKeyPress={handleSearch} />
 				<FormControl sx={{minWidth: 80}}>
 					<InputLabel id="Field">Field</InputLabel>
 					<Select

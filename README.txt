@@ -42,6 +42,9 @@ Included Files
 ----------------------------------------------
 Changes 
 
+I have included my data loading files as well as my psql DDL file. All I did was add some fields (ratings, descriptions, 
+and some other metadata) and improved the date parsing in the python files. 
+
 ----------------------------------------------
 Known Issues
 

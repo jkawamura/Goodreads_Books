@@ -81,7 +81,7 @@ router.get('/', async (req, res) => {
       query.$and.push({ bookTitle: new RegExp(`.*${req.query.contains}.*`, 'i') });
       break;
     case 'Author':
-      query.$and.push({ $expr: { $regexMatch: { input: { $concat: [{ $first: '$authors.firstName' }, { $first: '$authors.lastName' }] }, regex: `${req.query.contains}`, options: 'i' } } });
+      query.$and.push({ $expr: { $regexMatch: { input: { $concat: [{ $first: '$authors.firstName' }, { $first: '$authors.lastName' }] }, regex: `${req.query.contains.replace(' ', '')}`, options: 'i' } } });
       break;
     case 'Description':
       query.$and.push({ description: new RegExp(`.*${req.query.contains}.*`, 'i') });
