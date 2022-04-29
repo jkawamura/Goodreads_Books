@@ -32,9 +32,11 @@ Included Files
 
     /server/    - holds all of the back end code
         /config/.env    - holds environment variables needed to connect to the databases. Used by npm scripts.
-        /practice_queries/    - playground for seeing why my queries were breaking
+        /data_files/    - holds the modified data loading scripts from hw4
         /public/    - the Reactjs app builds to this folder so it can be served by Express/Node.js
         /routes/    - contains the various express route files that contain all the server endpoints.
+            /mongodb/   - contains all of the endpoints for the mongodb database
+            /psql/     - contains all of the endpoints for the psql database
         app.js  - entry point into the express API.
         db-mongodb.js   - creates a new mongodb client that other express files use to connect to the database
         db-psql.js      - creates a new psql pool that other express files can connect to
@@ -42,8 +44,8 @@ Included Files
 ----------------------------------------------
 Changes 
 
-I have included my data loading files as well as my psql DDL file. All I did was add some fields (ratings, descriptions, 
-and some other metadata) and improved the date parsing in the python files. 
+I have included my data loading files as well as my psql DDL file. These files can be found in /hw5/server/data_files.
+All I did was add some fields (ratings, descriptions, and some other metadata) and improved the date parsing in the python files. 
 
 ----------------------------------------------
 Known Issues
