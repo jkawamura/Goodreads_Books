@@ -22,12 +22,14 @@ interface QueryComponentProps {
 const QueryComponentPsql = ({...props}: QueryComponentProps) => {
 	const {data: genreData, error: genreError, isPending: genrePending} = useFetch('http://165.106.10.170:32401/psql/genres');
 	const {data: languageData, error: languageError, isPending: languagePending} = useFetch('http://165.106.10.170:32401/psql/books/languages');
-	const handleSearch = (e: any) => {
+	const handleEnter = (e: any) => {
 		if (e.key === 'Enter') {
 			props.handleSearchClick();
-		} else {
-			props.setSearch(e.target.value);
 		}
+	};
+
+	const handleSearch = (e: any) => {
+		props.setSearch(e.target.value);
 	};
 
 	const handleFieldSelect = (event: SelectChangeEvent) => {
@@ -65,7 +67,7 @@ const QueryComponentPsql = ({...props}: QueryComponentProps) => {
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={3} display="flex">
-				<TextField id="outlined-basic" label={`${props.fieldSelect} Contains`} variant="outlined" onKeyPress={handleSearch} />
+				<TextField id="outlined-basic" label={`${props.fieldSelect} Contains`} variant="outlined" onChange={handleSearch} onKeyPress={handleEnter} />
 				<FormControl sx={{minWidth: 80}}>
 					<InputLabel id="Field">Field</InputLabel>
 					<Select

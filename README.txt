@@ -8,7 +8,7 @@ How to access the site
 ----------------------------------------------
 How to restart Node.js
 
-    Go into the server ('./hw5/server') folder and run 'npm run start'. The startup script uses the PM2 package. 
+    Go into the server ('./goodreads/server') folder and run 'npm run start'. The startup script uses the PM2 package. 
 
 ----------------------------------------------
 Included Files
